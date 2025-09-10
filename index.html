@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Pra Você 💖</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Arial', sans-serif;
+      color: white;
+      position: relative;
+      background: linear-gradient(135deg, #ff758c, #ff7eb3);
+    }
+
+    /* Canvas de partículas */
+    #background {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      z-index: -1;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .login, .content {
+      text-align: center;
+      max-width: 700px;
+      margin: 0 auto;
+      padding: 40px 20px;
+      min-height: 100vh; /* ocupa pelo menos a altura da tela */
+    }
+
+    h1 {
+      font-size: 2.5em;
+      margin-bottom: 20px;
+      animation: fadeIn 2s ease-in-out;
+    }
+
+    p {
+      font-size: 1.3em;
+      animation: fadeIn 3s ease-in-out;
+    }
+
+    input {
+      padding: 10px;
+      border-radius: 10px;
+      border: none;
+      margin-top: 20px;
+      font-size: 1em;
+      text-align: center;
+    }
+
+    button {
+      margin-top: 15px;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 20px;
+      background: #fff;
+      color: #ff4f7a;
+      font-size: 1em;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    button:hover {
+      background: #ff4f7a;
+      color: white;
+    }
+
+    img {
+      margin: 30px 0;
+      border-radius: 20px;
+      max-width: 90%;
+      box-shadow: 0px 5px 25px rgba(0,0,0,0.4);
+      animation: fadeInUp 2s ease-in-out;
+    }
+
+    iframe {
+      margin-top: 20px;
+      border-radius: 15px;
+      box-shadow: 0px 5px 25px rgba(0,0,0,0.4);
+      animation: fadeIn 4s ease-in-out;
+      width: 100%;
+      max-width: 600px;
+    }
+
+    @keyframes fadeIn {
+      from {opacity: 0;}
+      to {opacity: 1;}
+    }
+
+    @keyframes fadeInUp {
+      from {opacity: 0; transform: translateY(40px);}
+      to {opacity: 1; transform: translateY(0);}
+    }
+
+    .footer {
+      margin-top: 40px;
+      font-size: 1.2em;
+      animation: fadeIn 5s ease-in-out;
+    }
+  </style>
+</head>
+<body>
+  <!-- Canvas de fundo animado -->
+  <canvas id="background"></canvas>
+
+  <!-- Tela de senha -->
+  <div class="login" id="login">
+    <h1>🔒 Área Secreta</h1>
+    <p>Digite a senha que só você sabe 💕<br>Algo que nós dois gosta em comum 😊</p>
+    <input type="password" id="password" placeholder="Senha">
+    <br>
+    <button onclick="checkPassword()">Entrar</button>
+  </div>
+
+  <!-- Conteúdo -->
+  <div class="content hidden" id="content">
+    <h1>Esse cantinho é só seu 💖</h1>
+    <p>Eu queria criar algo único, só pra você. Obrigado por ser quem é e por deixar meus dias mais felizes.</p>
+
+    <img src="nossa foto.jpg" alt="Foto nossa" width="250px">
+
+    <p>Mal posso esperar por tudo o que ainda vamos viver juntos ✨</p>
+
+    <!-- Playlist -->
+   <iframe data-testid="embed-iframe" style="border-radius:12px" src="https://open.spotify.com/embed/playlist/6SYmWoNlP7zW3xQVsWHtPj?utm_source=generator" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+
+
+    <div class="footer">
+      <p>💌 Com carinho, seu futuro namorado 😉</p>
+    </div>
+  </div>
+
+  <script>
+    // Validação da senha
+    function checkPassword() {
+      const password = document.getElementById("password").value;
+      const correct = "carros"; // 🔑 senha
+      if (password === correct) {
+        document.getElementById("login").classList.add("hidden");
+        document.getElementById("content").classList.remove("hidden");
+        window.scrollTo(0, 0);
+      } else {
+        alert("Senha incorreta 😳");
+      }
+    }
+
+    // Efeito de partículas
+    const canvas = document.getElementById("background");
+    const ctx = canvas.getContext("2d");
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    let particles = [];
+
+    class Particle {
+      constructor(x, y, size, speedX, speedY) {
+        this.x = x;
+        this.y = y;
+        this.size = size;
+        this.speedX = speedX;
+        this.speedY = speedY;
+      }
+      update() {
+        this.x += this.speedX;
+        this.y += this.speedY;
+        if (this.x < 0 || this.x > canvas.width) this.speedX *= -1;
+        if (this.y < 0 || this.y > canvas.height) this.speedY *= -1;
+      }
+      draw() {
+        ctx.fillStyle = "rgba(255,255,255,0.8)";
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.closePath();
+        ctx.fill();
+      }
+    }
+
+    function init() {
+      particles = [];
+      for (let i = 0; i < 60; i++) {
+        let size = Math.random() * 3 + 1;
+        let x = Math.random() * canvas.width;
+        let y = Math.random() * canvas.height;
+        let speedX = (Math.random() - 0.5) * 1;
+        let speedY = (Math.random() - 0.5) * 1;
+        particles.push(new Particle(x, y, size, speedX, speedY));
+      }
+    }
+
+    function animate() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      for (let particle of particles) {
+        particle.update();
+        particle.draw();
+      }
+      requestAnimationFrame(animate);
+    }
+
+    init();
+    animate();
+
+    window.addEventListener("resize", () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      init();
+    });
+  </script>
+</body>
+</html>
